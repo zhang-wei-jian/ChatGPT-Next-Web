@@ -1,5 +1,10 @@
-export const OWNER = "Yidadaa";
-export const REPO = "ChatGPT-Next-Web";
+// export const OWNER = "Yidadaa";
+// github地址
+export const OWNER = "zhang-wei-jian";
+// export const REPO = "ChatGPT-Next-Web";
+// github项目名称
+export const REPO = "";
+
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 export const UPDATE_URL = `${REPO_URL}#keep-updated`;
@@ -25,6 +30,7 @@ export enum Path {
 export enum ApiPath {
   Cors = "/api/cors",
   OpenAI = "/api/openai",
+  // OpenAI = "http://60.204.170.225:8501",
 }
 
 export enum SlotID {

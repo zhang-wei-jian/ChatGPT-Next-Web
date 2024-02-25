@@ -10,7 +10,8 @@ import { GoogleTagManager } from "@next/third-parties/google";
 const serverConfig = getServerSideConfig();
 
 export const metadata: Metadata = {
-  title: "NextChat",
+  // title: "NextChat",
+  title: "AI助手",
   description: "Your personal ChatGPT Chat Bot.",
   viewport: {
     width: "device-width",
@@ -40,6 +41,13 @@ export default function RootLayout({
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>
+        <div id="imageBG">
+          {/* <img src="/colorBG.png" alt="" /> */}
+          <img
+            src="https://static.xiedaimala.com/xdml/image/5939aa7c-d446-47c4-a9c1-ea1e52b10249/MjAyMy00LTIwLTIwLTE2LTQ3LTY5OQ==.png"
+            alt=""
+          />
+        </div>
         {children}
         {serverConfig?.isVercel && (
           <>
