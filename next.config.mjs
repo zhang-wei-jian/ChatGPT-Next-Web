@@ -32,7 +32,9 @@ const nextConfig = {
   },
   experimental: {
     forceSwcTransforms: true,
+    instrumentationHook: true,
   },
+
 };
 
 const CorsHeaders = [

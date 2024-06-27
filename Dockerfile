@@ -37,8 +37,9 @@ ENV CODE=""
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/.next/server ./.next/server
+# COPY --from=builder /app/.next/static ./.next/static
+# COPY --from=builder /app/.next/server ./.next/server
+COPY --from=builder /app/.next ./.next
 
 EXPOSE 3000
 
@@ -62,3 +63,74 @@ CMD if [ -n "$PROXY_URL" ]; then \
     else \
     node server.js; \
     fi
+# FROM node:18-alpine AS base
+
+# # 安装基础依赖
+# RUN apk add --no-cache libc6-compat
+
+# # 设置工作目录
+# WORKDIR /app
+
+# # 安装应用依赖
+# FROM base AS deps
+# COPY package.json yarn.lock ./
+# RUN yarn config set registry 'https://registry.npmmirror.com/'
+# RUN yarn install
+
+# # 构建应用
+# FROM base AS builder
+# RUN apk update && apk add --no-cache git
+
+# # 设置环境变量
+# ENV OPENAI_API_KEY=""
+# ENV GOOGLE_API_KEY=""
+# ENV CODE=""
+
+# COPY --from=deps /app/node_modules ./node_modules
+# COPY . .
+# RUN yarn build
+
+# # 运行应用
+# FROM base AS runner
+# WORKDIR /app
+
+# # 安装proxychains-ng用于代理配置
+# RUN apk add proxychains-ng
+
+# # 再次设置环境变量
+# ENV PROXY_URL=""
+# ENV OPENAI_API_KEY=""
+# ENV GOOGLE_API_KEY=""
+# ENV CODE=""
+# ENV BASE_URL="wocaonima"
+
+# # 复制构建产物和node_modules，确保所有构建后的文件和依赖都被包含
+# COPY --from=builder /app/.next ./.next
+# COPY --from=builder /app/public ./public
+# COPY --from=builder /app/node_modules ./node_modules
+# COPY --from=builder /app/package.json ./package.json
+
+# # 暴露端口3000
+# EXPOSE 3000
+
+# # 修改CMD指令，使用Next.js的start命令来启动应用，并保留代理逻辑
+# CMD if [ -n "$PROXY_URL" ]; then \
+#     export HOSTNAME="127.0.0.1"; \
+#     protocol=$(echo $PROXY_URL | cut -d: -f1); \
+#     host=$(echo $PROXY_URL | cut -d/ -f3 | cut -d: -f1); \
+#     port=$(echo $PROXY_URL | cut -d: -f3); \
+#     conf=/etc/proxychains.conf; \
+#     echo "strict_chain" > $conf; \
+#     echo "proxy_dns" >> $conf; \
+#     echo "remote_dns_subnet 224" >> $conf; \
+#     echo "tcp_read_time_out 15000" >> $conf; \
+#     echo "tcp_connect_time_out 8000" >> $conf; \
+#     echo "localnet 127.0.0.0/255.0.0.0" >> $conf; \
+#     echo "localnet ::1/128" >> $conf; \
+#     echo "[ProxyList]" >> $conf; \
+#     echo "$protocol $host $port" >> $conf; \
+#     cat /etc/proxychains.conf; \
+#     proxychains -f $conf yarn start; \
+#     else \
+#     yarn start; \
+#     fi

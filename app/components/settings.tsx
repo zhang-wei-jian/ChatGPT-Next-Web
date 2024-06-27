@@ -700,7 +700,7 @@ export function Settings() {
             </Popover>
           </ListItem>
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
             subTitle={
               checkingUpdate
@@ -723,6 +723,23 @@ export function Settings() {
                 onClick={() => checkUpdate(true)}
               />
             )}
+          </ListItem> */}
+          <ListItem title={"If U Like Me"}>
+            <div>
+              <a
+                href="https://github.com/zhang-wei-jian/AnyAiWeb"
+                target="_blank"
+                style={{ textDecoration: "none" }}
+              >
+                <IconButton
+                  icon={<CopyIcon />}
+                  className={styles["user-prompt-button"]}
+                  // text={"QQ群455051153"}
+                  text={"GitHub"}
+                  // onClick={() => copyToClipboard("455051153")}
+                />
+              </a>
+            </div>
           </ListItem>
 
           <ListItem title={Locale.Settings.SendKey}>

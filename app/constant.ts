@@ -1,9 +1,9 @@
-// export const OWNER = "Yidadaa";
+export const OWNER = "Yidadaa";
 // github地址
-export const OWNER = "zhang-wei-jian";
-// export const REPO = "ChatGPT-Next-Web";
+// export const OWNER = "zhang-wei-jian";
 // github项目名称
-export const REPO = "";
+export const REPO = "ChatGPT-Next-Web";
+// export const REPO = "";
 
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
@@ -288,6 +288,36 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gemini-pro-vision",
+    available: true,
+    provider: {
+      id: "google",
+      providerName: "Google",
+      providerType: "google",
+    },
+  },
+
+  // 自定义
+  {
+    name: "gemma:7b",
+    available: true,
+    provider: {
+      id: "google",
+      providerName: "Google",
+      providerType: "google",
+    },
+  },
+
+  {
+    name: "yi:34b",
+    available: true,
+    provider: {
+      id: "google",
+      providerName: "Google",
+      providerType: "google",
+    },
+  },
+  {
+    name: "gemma:7b-instruct-fp16",
     available: true,
     provider: {
       id: "google",

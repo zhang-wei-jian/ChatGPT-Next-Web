@@ -2,11 +2,15 @@
 import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import { getClientConfig } from "./config/client";
 import { type Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getServerSideConfig } from "./config/server";
 import { GoogleTagManager } from "@next/third-parties/google";
+import { Providers } from "./providers";
+
 const serverConfig = getServerSideConfig();
 
 export const metadata: Metadata = {
@@ -34,13 +38,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="light">
       <head>
         <meta name="config" content={JSON.stringify(getClientConfig())} />
         <link rel="manifest" href="/site.webmanifest"></link>
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
+
       <body>
+        {/* <Providers> */}
+        <ToastContainer />
         <div id="imageBG">
           {/* <img src="/colorBG.png" alt="" /> */}
           <img
@@ -59,6 +66,8 @@ export default function RootLayout({
             <GoogleTagManager gtmId={serverConfig.gtmId} />
           </>
         )}
+
+        {/* </Providers> */}
       </body>
     </html>
   );

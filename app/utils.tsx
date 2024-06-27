@@ -3,6 +3,7 @@ import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
 import { DEFAULT_MODELS } from "./constant";
+import { toast } from "react-toastify";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -296,4 +297,26 @@ export function isVisionModel(model: string) {
     model.startsWith("gemini-pro-vision") ||
     !DEFAULT_MODELS.find((m) => m.name == model)
   );
+}
+
+const HTMLToastContent = ({ htmlContent }: { htmlContent: string }) => {
+  return <div dangerouslySetInnerHTML={{ __html: htmlContent }} />;
+};
+export function showNotice(message: string) {
+  // toast("Wow so easy !")
+
+  // toast(message, {
+  toast(<HTMLToastContent htmlContent={message} />, {
+    // position: "top-right",
+    // position: "top-left",
+    position: "top-center",
+    autoClose: 99999,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    // transition: Bounce,
+  });
 }

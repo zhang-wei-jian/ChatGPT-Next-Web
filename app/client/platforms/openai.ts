@@ -1,3 +1,18 @@
+// 这段代码定义了一个名为 ChatGPTApi 的类，该类实现了 LLMApi 接口，用于与 OpenAI 的聊天 API 进行交互。
+
+// 主要功能包括：
+
+// 构造函数：根据提供的模型提供者，实例化对应的聊天 API。默认情况下，使用 ChatGPTApi。
+
+// path 方法：根据提供的路径和配置信息构建请求的 URL，并处理 Azure 的情况。
+
+// chat 方法：发送聊天请求。根据配置的模型、消息内容等参数，构建请求体，并根据是否开启流式传输发送不同类型的请求。在使用流式传输时，通过 EventSource 接收并处理服务器端的响应，并调用相应的回调函数。
+
+// usage 方法：获取聊天 API 的使用情况，包括已使用量和总量。
+
+// models 方法：获取可用的聊天模型列表。
+
+// 此外，还定义了一个接口 OpenAIListModelResponse 用于处理从 OpenAI 返回的模型列表数据，并导出了 OpenaiPath 常量，包含了用于构建 OpenAI API 路径的常量。
 "use client";
 import {
   ApiPath,
@@ -30,6 +45,7 @@ import {
   getMessageImages,
   isVisionModel,
 } from "@/app/utils";
+import { showToast } from "@/app/components/ui-lib";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -84,6 +100,8 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
+    const accessStore = useAccessStore.getState();
+
     const visionModel = isVisionModel(options.config.model);
     const messages = options.messages.map((v) => ({
       role: v.role,
@@ -177,6 +195,9 @@ export class ChatGPTApi implements LLMApi {
               contentType,
             );
 
+            // console.log(res, "resssssss");
+            // debugger
+
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
               return finish();
@@ -201,6 +222,14 @@ export class ChatGPTApi implements LLMApi {
               }
 
               if (extraInfo) {
+                // 包含返回的余额不足关键字
+                if (extraInfo.includes("insufficient_user_quota")) {
+                  showToast("余额不足");
+                  responseTexts.push(`余额不足 `);
+                  // 充值弹窗 显示
+                  accessStore.update((access) => (access.showPayMoney = true));
+                }
+
                 responseTexts.push(extraInfo);
               }
 

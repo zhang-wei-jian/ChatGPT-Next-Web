@@ -733,6 +733,10 @@ function _Chat() {
 
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
+    var error = chaeckApiKey(userInput);
+    if (error) {
+      return;
+    }
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
       setUserInput("");
@@ -750,6 +754,16 @@ function _Chat() {
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
+  };
+  // 校验apiKey是不是空
+  const chaeckApiKey = (userInput: string) => {
+    if (accessStore.openaiApiKey === "") {
+      // 弹出登录框
+      accessStore.update((access) => (access.showLogin = true));
+      // 弹出消息
+      showToast("您还没有登录哦");
+      return "error";
+    }
   };
 
   const onPromptSelect = (prompt: RenderPompt) => {

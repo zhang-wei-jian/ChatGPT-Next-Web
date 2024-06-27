@@ -1,9 +1,10 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 
 import styles from "./home.module.scss";
 
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
+import Robot from "../icons/robot.svg";
 import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
@@ -12,6 +13,9 @@ import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
+import User from "../icons/user.svg";
+import Login from "../icons/log-in.svg";
+import Pay from "../icons/pay.svg";
 
 import Locale from "../locales";
 
@@ -30,6 +34,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
+import { LoginMessageModal } from "./login";
+import { UserInfoMessageModal } from "./userInfo";
+import { PayMoneyMessageModal } from "./payMoney";
+import { useAccessStore } from "../store";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -141,6 +149,12 @@ export function SideBar(props: { className?: string }) {
     [isMobileScreen],
   );
 
+  const accessStore = useAccessStore();
+
+  const [showLogin, setShowLogin] = useState(false);
+  const [showUserInfo, setShowUserInfo] = useState(false);
+  const [showPayMoney, setShowPayMoney] = useState(false);
+
   useHotKey();
 
   return (
@@ -156,13 +170,19 @@ export function SideBar(props: { className?: string }) {
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
           {/* NextChat */}
-          你的AI助手
+          {/* 你的AI助手 */}
+          {accessStore.systemName}
         </div>
         <div className={styles["sidebar-sub-title"]}>
           Build your own AI assistant.
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <ChatGptIcon />
+          {/* <ChatGptIcon /> */}
+          {accessStore.logo ? (
+            <img style={{ height: "43px" }} src={accessStore.logo} alt="" />
+          ) : (
+            <ChatGptIcon />
+          )}
         </div>
       </div>
 
@@ -213,15 +233,47 @@ export function SideBar(props: { className?: string }) {
             />
           </div>
           <div className={styles["sidebar-action"]}>
+            {/* 这里做判断，登录和退出登录图标 */}
+            {/* user: {accessStore.userName} */}
+
+            {accessStore.userName ? (
+              // 个人信息按钮
+              <div onClick={() => setShowUserInfo(true)}>
+                <IconButton icon={<User />} shadow />
+              </div>
+            ) : (
+              // 登录按钮
+              <div
+                onClick={() =>
+                  accessStore.update((access) => (access.showLogin = true))
+                }
+              >
+                <IconButton icon={<Login />} shadow />
+              </div>
+            )}
+          </div>
+
+          {/* payMoney */}
+          <div className={styles["sidebar-action"]}>
+            <div
+              onClick={() =>
+                accessStore.update((access) => (access.showPayMoney = true))
+              }
+            >
+              <IconButton icon={<Pay />} shadow />
+            </div>
+          </div>
+
+          <div className={styles["sidebar-action"]}>
             <Link to={Path.Settings}>
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <div className={styles["sidebar-action"]}>
+          {/* <div className={styles["sidebar-action"]}>
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
               <IconButton icon={<GithubIcon />} shadow />
             </a>
-          </div>
+          </div> */}
         </div>
         <div>
           <IconButton
@@ -246,6 +298,25 @@ export function SideBar(props: { className?: string }) {
       >
         <DragIcon />
       </div>
+
+      {accessStore.showLogin && (
+        <LoginMessageModal
+          onClose={() =>
+            accessStore.update((access) => (access.showLogin = false))
+          }
+        />
+      )}
+      {showUserInfo && (
+        <UserInfoMessageModal onClose={() => setShowUserInfo(false)} />
+      )}
+
+      {accessStore.showPayMoney && (
+        <PayMoneyMessageModal
+          onClose={() =>
+            accessStore.update((access) => (access.showPayMoney = false))
+          }
+        />
+      )}
     </div>
   );
 }

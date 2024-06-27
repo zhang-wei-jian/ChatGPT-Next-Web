@@ -14,7 +14,7 @@ import Locale from "../locales";
 
 import { createRoot } from "react-dom/client";
 import React, { HTMLProps, useEffect, useState } from "react";
-import { IconButton } from "./button";
+import { IconButton, IconButtonWeb } from "./button";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -160,6 +160,60 @@ export function Modal(props: ModalProps) {
     </div>
   );
 }
+export function ModalMini(props: ModalProps) {
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        props.onClose?.();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [isMax, setMax] = useState(!!props.defaultMax);
+
+  return (
+    <div className={styles["modal-container-mini"] + ` `}>
+      <div className={styles["modal-header"]}>
+        <div className={styles["modal-title"]}>{props.title}</div>
+
+        <div className={styles["modal-header-actions"]}>
+          {/* <div
+            className={styles["modal-header-action"]}
+            onClick={() => setMax(!isMax)}
+          >
+            {isMax ? <MinIcon /> : <MaxIcon />}
+          </div> */}
+          <div
+            className={styles["modal-header-action"]}
+            onClick={props.onClose}
+          >
+            <CloseIcon />
+          </div>
+        </div>
+      </div>
+
+      <div className={styles["modal-content"]}>{props.children}</div>
+
+      {/* <div className={styles["modal-footer"]}>
+        {props.footer}
+        <div className={styles["modal-actions"]}>
+          {props.actions?.map((action, i) => (
+            <div key={i} className={styles["modal-action"]}>
+              {action}
+            </div>
+          ))}
+        </div>
+      </div> */}
+    </div>
+  );
+}
 
 export function showModal(props: ModalProps) {
   const div = document.createElement("div");
@@ -271,6 +325,33 @@ export function PasswordInput(props: HTMLProps<HTMLInputElement>) {
         type={visible ? "text" : "password"}
         className={"password-input"}
       />
+    </div>
+  );
+}
+export function PasswordInputWeb(props: HTMLProps<HTMLInputElement>) {
+  const [visible, setVisible] = useState(false);
+
+  function changeVisibility() {
+    setVisible(!visible);
+  }
+
+  return (
+    <div className={"password-input-container-web"}>
+      <input
+        {...props}
+        type={visible ? "text" : "password"}
+        className={"password-input"}
+      />
+      <IconButtonWeb
+        icon={visible ? <EyeIcon /> : <EyeOffIcon />}
+        onClick={changeVisibility}
+        className={"password-eye"}
+      />
+      {/* <IconButton
+        icon={visible ? <EyeIcon /> : <EyeOffIcon />}
+        onClick={changeVisibility}
+        className={"password-eye"}
+      /> */}
     </div>
   );
 }

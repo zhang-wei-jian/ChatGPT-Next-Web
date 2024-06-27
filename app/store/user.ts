@@ -43,22 +43,6 @@ const DEFAULT_ACCESS_STATE = {
   disableGPT4: false,
   disableFastLink: false,
   customModels: "",
-
-  // webUser
-  userName: "",
-  accessToken: "",
-  quota: "",
-  aff_code: "ssss",
-  base_url: "",
-
-  // showMessage
-  showLogin: false,
-  showUserInfo: false,
-  showPayMoney: false,
-
-  // system
-  systemName: "你的AI助手",
-  logo: "",
 };
 
 export const useAccessStore = createPersistStore(
